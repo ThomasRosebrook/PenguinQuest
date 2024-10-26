@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using Game3.Screens;
 
 namespace Game3.StateManagement
 {
@@ -11,6 +12,7 @@ namespace Game3.StateManagement
         private readonly List<GameScreen> _tmpScreensList = new List<GameScreen>();
 
         private readonly ContentManager _content;
+        private readonly LevelManager _levels;
         private readonly InputManager _input = new InputManager();
 
         private bool _isInitialized;
@@ -19,9 +21,10 @@ namespace Game3.StateManagement
 
         public SpriteFont Font { get; private set; }
 
-        public ScreenManager (Game game) : base(game)
+        public ScreenManager (Game game, LevelManager levels) : base(game)
         {
             _content = new ContentManager(game.Services, "Content");
+            _levels = levels;
         }
 
         public override void Initialize()
@@ -101,6 +104,7 @@ namespace Game3.StateManagement
 
         public void RemoveScreen(GameScreen screen)
         {
+            if (screen is Level) _levels.SaveLevelData();
             if (_isInitialized) screen.Unload();
 
             _screens.Remove(screen);
@@ -111,6 +115,44 @@ namespace Game3.StateManagement
         {
             return _screens.ToArray();
         }
+
+        public World GetCurrentWorld() => _levels.GetCurrentWorld();
+
+        public int GetCurrentWorldIndex() => _levels.CurrentWorld;
+
+        public Level GetCurrentLevel() => _levels.GetCurrentLevel();
+
+        public Level GetNextLevel()
+        {
+            _levels.CurrentLevel++;
+            return _levels.GetCurrentLevel();
+        }
+
+        public void SetCurrentLevel(int levelIndex)
+        {
+            _levels.CurrentLevel = levelIndex;
+        }
+
+        public void IncWorld(int incAmount)
+        {
+            if (incAmount + _levels.CurrentWorld < 0) SetCurrentWorld(_levels.NumWorlds - 1);
+            else if (incAmount + _levels.CurrentWorld > _levels.NumWorlds - 1) SetCurrentWorld(0);
+            else SetCurrentWorld(incAmount + _levels.CurrentWorld);
+        }
+
+        public void IncLevel(int incAmount)
+        {
+            if (incAmount + _levels.CurrentLevel < 0) SetCurrentLevel(_levels.NumLevels - 1);
+            else if (incAmount + _levels.CurrentLevel > _levels.NumLevels - 1) SetCurrentLevel(0);
+            else SetCurrentLevel(incAmount + _levels.CurrentLevel);
+        }
+
+        public void SetCurrentWorld(int worldIndex)
+        {
+            _levels.SetCurrentWorld(worldIndex);
+        }
+
+        public bool HasNextLevel() => _levels.HasNextLevel;
 
         public void FadeBackBufferToBlack(float alpha)
         {

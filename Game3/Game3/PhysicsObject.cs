@@ -16,11 +16,36 @@ namespace Game3
         public Vector2 Position = new Vector2();
         public Vector2 LastPosition;
 
+        //public Vector2 MaxVelocity = new Vector2(0,100);
+        //public Vector2 MinVelocity = new Vector2(0, -100);
+
         public IBoundingShape Bounds;
 
-        public int Width;
+        public bool UpdateBoundsDimensions = true;
 
-        public int Height;
+        int _width;
+        
+        public int Width
+        {
+            get => _width;
+            set
+            {
+                _width = value;
+                if (UpdateBoundsDimensions) Bounds.UpdateWidth(_width);
+            }
+        }
+
+        int _height;
+
+        public int Height
+        {
+            get => _height;
+            set
+            {
+                _height = value;
+                if (UpdateBoundsDimensions) Bounds.UpdateHeight(_height);
+            }
+        }
 
         public PhysicsObject(Vector2 initialPosition, BoundingRectangle bounds)
         {
@@ -42,6 +67,9 @@ namespace Game3
 
             Velocity += Acceleration * Time * new Vector2(Speed,1);
 
+            //if (Velocity.Y < MinVelocity.Y) Velocity.Y = MinVelocity.Y;
+            //if (Velocity.Y > MaxVelocity.Y) Velocity.Y = MaxVelocity.Y;
+
             LastPosition = Position;
             Position += Velocity;
             Bounds.UpdatePosition(Position);
@@ -55,7 +83,6 @@ namespace Game3
             if (isObjStatic)
             {
                 Vector2 Direction = Position - LastPosition;
-
                 if (collision == CollisionType.Top || collision == CollisionType.Bottom)
                 {
                     Position.Y -= Direction.Y;
@@ -123,6 +150,13 @@ namespace Game3
                 Bounds.UpdatePosition(Position);
                 obj.Bounds.UpdatePosition(obj.Position);
             }
+        }
+
+        public void UpdatePosition (Vector2 position)
+        {
+            LastPosition = Position;
+            Position = position;
+            Bounds.UpdatePosition(position);
         }
     }
 }

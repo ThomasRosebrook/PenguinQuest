@@ -15,6 +15,32 @@
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Content\Levels\1Level1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Levels\1level2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Levels\1level3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Levels\2level1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Levels\Level1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Levels\level2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Levels\Levels.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Save.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />
     <Exec Command="dotnet tool restore" />

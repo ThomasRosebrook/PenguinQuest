@@ -14,6 +14,8 @@ namespace Game3.Bounds
 
         public float Height;
 
+        public Vector2 lastPos;
+
         public float Left => X - Width / 2;
 
         public float Right => X + Width / 2;
@@ -28,6 +30,12 @@ namespace Game3.Bounds
             Y = position.Y;
             Width = width;
             Height = height;
+            lastPos = position;
+        }
+
+        public bool CollidesWith(Vector2 point)
+        {
+            return CollisionHelper.Collides(this, point);
         }
 
         public CollisionType CollidesWith(IBoundingShape other)
@@ -83,12 +91,16 @@ namespace Game3.Bounds
 
         public void UpdatePosition(float x, float y)
         {
+            lastPos.X = X;
+            lastPos.Y = Y;
             X = x;
             Y = y;
         }
 
         public void UpdatePosition(Vector2 position)
         {
+            lastPos.X = X;
+            lastPos.Y = Y;
             X = position.X;
             Y = position.Y;
         }

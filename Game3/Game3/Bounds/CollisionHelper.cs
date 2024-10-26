@@ -10,41 +10,42 @@ namespace Game3.Bounds
 
         public static CollisionType Collides(BoundingRectangle a, BoundingRectangle b)
         {
-            CollisionType xCollision = CollisionType.Left;
-            CollisionType yCollision = CollisionType.Bottom;
+            bool xPreviouslyColliding;
+            bool yPreviouslyColliding;
+            CollisionType xCollision = CollisionType.None;
+            CollisionType yCollision = CollisionType.None;
 
-            Vector2 Diagonal = new Vector2();
-            
             if (!(a.Right < b.Left || a.Left > b.Right || a.Top > b.Bottom || a.Bottom < b.Top))
             {
-                if (Math.Abs(a.Right - b.X) <= Math.Abs(a.Left - b.X))
+                if (a.X < b.X)
                 {
-                    Diagonal.X = Math.Abs(a.Right - b.Left);
                     xCollision = CollisionType.Right;
+                    xPreviouslyColliding = a.lastPos.X + a.Width / 2 > b.lastPos.X - b.Width / 2;
                 }
                 else
                 {
-                    Diagonal.X = Math.Abs(a.Left - b.Right);
                     xCollision = CollisionType.Left;
+                    xPreviouslyColliding = a.lastPos.X - a.Width / 2 < b.lastPos.X + b.Width / 2;
                 }
 
-                if (Math.Abs(a.Bottom - b.Y) <= Math.Abs(a.Top - b.Y))
+                if (a.Y < b.Y)
                 {
-                    Diagonal.Y = Math.Abs(a.Bottom - b.Top);
                     yCollision = CollisionType.Bottom;
+                    yPreviouslyColliding = a.lastPos.Y + a.Height / 2 > b.lastPos.Y - b.Height / 2;
                 }
                 else
                 {
-                    Diagonal.Y = Math.Abs(a.Top - b.Bottom);
                     yCollision = CollisionType.Top;
+                    yPreviouslyColliding = a.lastPos.Y - a.Height / 2 < b.lastPos.Y + b.Height / 2;
                 }
 
-                if (Diagonal.X > Diagonal.Y) return yCollision;
-                return xCollision;
+                if (xPreviouslyColliding) return yCollision;
+                if (yPreviouslyColliding) return xCollision;
+                if (Math.Abs(a.lastPos.X - a.X) < Math.Abs(a.lastPos.Y - a.Y)) return xCollision;
+                return yCollision;
+
 
             }
-
-            //!(a.Right < b.Left || a.Left > b.Right || a.Top > b.Bottom || a.Bottom < b.Top)
 
             return CollisionType.None;
         }
@@ -71,6 +72,11 @@ namespace Game3.Bounds
         {
             //return Math.Pow(a.Radius + b.Radius, 2) >= Math.Pow(a.Center.X - b.Center.X, 2) + Math.Pow(a.Center.Y - b.Center.Y, 2);
             return CollisionType.None;
+        }
+
+        public static bool Collides(BoundingRectangle r, Vector2 point)
+        {
+            return r.Left < point.X && point.X < r.Right && r.Top < point.Y && point.Y < r.Bottom;
         }
     }
 

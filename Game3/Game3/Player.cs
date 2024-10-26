@@ -13,6 +13,7 @@ namespace Game3
         const float WING_ANIMATION_TIME = 10;
 
         Texture2D texture;
+        //Texture2D cube;
 
         int maxJumps = 2;
         int numJumps = 2;
@@ -26,13 +27,16 @@ namespace Game3
 
         public Player(Vector2 position) : base(position, new BoundingRectangle(position, 88, 128))
         {
+            UpdateBoundsDimensions = false;
             Width = 128;
             Height = 128;
+            //Acceleration.Y = 0;
         }
 
         public void LoadContent(ContentManager contentManager)
         {
             texture = contentManager.Load<Texture2D>("Penguin");
+            //cube = contentManager.Load<Texture2D>("Cube");
         }
 
         public override void Update(GameTime gameTime)
@@ -75,7 +79,7 @@ namespace Game3
             else if (Velocity.X > 0) y = (short)(1 + wingFrame);
 
             spriteBatch.Draw(texture, Position, new Rectangle(animationFrame * Width, y * Height, Width, Height), Color.White, 0, new Vector2(Width / 2, Height / 2), 1f, SpriteEffects.None, 0);
-            //spriteBatch.Draw(texture, Position, new Rectangle(animationFrame * Width + Width - (int)Bounds.GetWidth(), y * (int)Bounds.GetHeight(), (int)Bounds.GetWidth(), (int)Bounds.GetHeight()), Color.Red, 0, new Vector2(Width / 2, Height / 2), 1f, SpriteEffects.None, 0);
+            //spriteBatch.Draw(cube, Bounds.GetPosition(), new Rectangle(animationFrame * Width + Width - (int)Bounds.GetWidth(), y * (int)Bounds.GetHeight(), (int)Bounds.GetWidth(), (int)Bounds.GetHeight()), Color.Red, 0, new Vector2(Bounds.GetWidth() / 2, Bounds.GetHeight() / 2), 1f, SpriteEffects.None, 0);
         }
 
         public void Jump(GameTime gameTime)

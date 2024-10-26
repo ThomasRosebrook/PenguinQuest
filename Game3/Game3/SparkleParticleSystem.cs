@@ -20,7 +20,7 @@ namespace Game3
 
         Color color;
 
-        public SparkleParticleSystem(Game game, int maxSparks) : base(game, maxSparks * 25)
+        public SparkleParticleSystem(Game game, int maxSparks) : base(game, maxSparks)
         {
 
         }
@@ -29,8 +29,8 @@ namespace Game3
         {
             textureFilename = "Spark";
 
-            minNumParticles = 20;
-            maxNumParticles = 25;
+            minNumParticles = 15;
+            maxNumParticles = 20;
 
             blendState = BlendState.Additive;
             DrawOrder = AdditiveBlendDrawOrder;
@@ -40,7 +40,7 @@ namespace Game3
         {
             float angle = RandomHelper.NextFloat(0, MathHelper.TwoPi);
             var velocity = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * RandomHelper.NextFloat(40, 200);
-            var lifetime = RandomHelper.NextFloat(0.5f, 1.0f);
+            var lifetime = RandomHelper.NextFloat(0.5f, 0.8f);
 
             var acceleration = -velocity / lifetime;
 
@@ -48,7 +48,7 @@ namespace Game3
 
             var angularVelocity = RandomHelper.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4);
 
-            var scale = RandomHelper.NextFloat(4, 6);
+            var scale = RandomHelper.NextFloat(1, 2);
 
             p.Initialize(where, velocity, acceleration, color, lifetime: lifetime, rotation: rotation, angularVelocity: angularVelocity, scale: scale);
         }

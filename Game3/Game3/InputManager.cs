@@ -17,8 +17,12 @@ namespace Game3
 
         public Vector2 Direction { get; private set; }
 
+        public Vector2 MousePosition { get; private set; }
+
         public bool JumpStart { get; private set; } = false;
         public bool Jump { get; private set; } = false;
+
+        public bool Click { get; private set; } = false;
 
         public bool Exit { get; private set; } = false;
 
@@ -34,6 +38,9 @@ namespace Game3
             currentKeyboardState = Keyboard.GetState();
 
             float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            MousePosition = currentMouseState.Position.ToVector2();
+            Click = currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released;
 
             Direction = new Vector2();
 

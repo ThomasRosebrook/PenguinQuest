@@ -1,35 +1,22 @@
-﻿using Game3.Bounds;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Game3
 {
-    public class Block : PhysicsObject
+    public struct Block
     {
-        Texture2D texture;
+        public Rectangle Tile;
 
-        public Block(Vector2 position) : base(position, new BoundingRectangle(position, 128, 128))
-        {
-            Acceleration.Y = 0;
-            Width = 128;
-            Height = 128;
-        }
+        public Vector2 Position;
 
-        public void LoadContent(ContentManager contentManager)
+        public Block (Rectangle index, Vector2 position)
         {
-            texture = contentManager.Load<Texture2D>("Cube");
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            //base.Update(gameTime);
-        }
-
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(texture, Position, new Rectangle(0, 0, Width, Height), Color.White, 0, new Vector2(Width / 2, Height / 2), 1f, SpriteEffects.None, 0);
+            Tile = index;
+            Position = position;
         }
     }
 }

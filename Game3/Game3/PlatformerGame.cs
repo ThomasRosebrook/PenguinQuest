@@ -11,6 +11,7 @@ namespace Game3
         private GraphicsDeviceManager _graphics;
         private readonly ScreenManager _screenManager;
         private SpriteBatch _spriteBatch;
+        private LevelManager _levelManager;
 
         Goal goal;
         SparkleParticleSystem _sparks;
@@ -20,32 +21,37 @@ namespace Game3
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            Window.Title = "Platform King";
+            Window.Title = "Penguin Quest";
+
+            int width = 1536;
+            int height = 864;
 
             goal = new Goal(new Vector2(4096,4096));
 
             var screenFactory = new ScreenFactory();
             Services.AddService(typeof(IScreenFactory), screenFactory);
 
-            _screenManager = new ScreenManager(this);
+            _levelManager = new LevelManager(goal, width, height);
+            _screenManager = new ScreenManager(this, _levelManager);
             Components.Add(_screenManager);
+
+            
 
             AddInitialScreens();
 
-            _graphics.PreferredBackBufferWidth = 1536;
-            _graphics.PreferredBackBufferHeight = 864;
+            _graphics.PreferredBackBufferWidth = width;
+            _graphics.PreferredBackBufferHeight = height;
         }
 
         private void AddInitialScreens()
         {
-            _screenManager.AddScreen(new MainMenu(goal), null);
+            _screenManager.AddScreen(new MainMenu(), null);
 
         }
 
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
             _sparks = new SparkleParticleSystem(this, 20);
             Components.Add(_sparks);
             goal.Sparks = _sparks;
@@ -56,8 +62,9 @@ namespace Game3
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
             goal.LoadContent(Content);
+            _levelManager.InitializeLevels(Content);
+            
             // TODO: use this.Content to load your game content here
         }
 

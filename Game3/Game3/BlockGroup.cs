@@ -9,38 +9,67 @@ namespace Game3
 {
     public class BlockGroup : PhysicsObject
     {
-        public List<Block> Blocks;
+        int BlockWidth = 0;
 
-        public int BlockWidth { get; private set; }
+        int BlockHeight = 0;
 
-        public int BlockHeight { get; private set; }
+        int numTilesWide = 0;
 
-        public BlockGroup(Vector2 position, int width, int height) : base(position, new BoundingRectangle(position, 128 * width, 128 * height))
+        int numTilesTall = 0;
+
+        Texture2D _tileset;
+        Texture2D cube;
+
+        List<Block> blocks;
+
+        public int BlockCount
         {
-            Acceleration.Y = 0;
-            Blocks = new List<Block>();
-
-            BlockWidth = width;
-            BlockHeight = height;
-
-            Width = BlockWidth * 128;
-            Height = BlockHeight * 128;
-
-            for (int i = 1; i <= BlockWidth; i++)
-            {
-                for (int j = 1; j <= BlockHeight; j++)
-                {
-                    Blocks.Add(new Block(new Vector2(position.X - Width / 2 + i * 128 - 64, position.Y - Height / 2 + j * 128 - 64)));
-                }
-            }
+            get => blocks.Count;
         }
 
-        public void LoadContent(ContentManager contentManager)
+        public BlockType BlockType = BlockType.Default;
+
+
+        public BlockGroup(Texture2D tileset, Vector2 position, int blockWidth, int blockHeight, BlockType type = BlockType.Default) : base(position, new BoundingRectangle(position, blockWidth, blockHeight))
         {
-            foreach(Block block in Blocks)
+            Acceleration.Y = 0;
+
+            _tileset = tileset;
+
+            BlockWidth = blockWidth;
+            BlockHeight = blockHeight;
+
+            Width = 0;
+            Height = 0;
+
+            BlockType = type;
+            blocks = new List<Block>();
+        }
+
+        public void LoadContent(ContentManager _content)
+        {
+            cube = _content.Load<Texture2D>("Cube");
+        }
+
+        public void AddBlock(Rectangle index, Vector2 position)
+        {
+            blocks.Add(new Block(index, position));
+            if (position.X > Position.X + Width / 2 || position.X < Position.X - Width / 2)
             {
-                block.LoadContent(contentManager);
+                numTilesWide++;
+                Width += BlockWidth;
             }
+            if (position.Y > Position.Y + Height / 2 || position.Y < Position.Y - Height / 2)
+            {
+                numTilesTall++;
+                Height += BlockHeight;
+            }
+
+            Vector2 AveragePosition = new Vector2((Position.X * (numTilesWide - 1) + position.X) / numTilesWide, (Position.Y * (numTilesTall - 1) + position.Y) / numTilesTall);
+
+            UpdatePosition(AveragePosition);
+            //Update Position again to update past positions
+            UpdatePosition(AveragePosition);
         }
 
         public override void Update(GameTime gameTime)
@@ -50,10 +79,18 @@ namespace Game3
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            foreach (Block block in Blocks)
+            //spriteBatch.Draw(cube, Bounds.GetPosition(), new Rectangle(0, 0, (int)Bounds.GetWidth(), (int)Bounds.GetHeight()), Color.White, 0, new Vector2(Bounds.GetWidth() / 2, Bounds.GetHeight() / 2), 1f, SpriteEffects.None, 0);
+            foreach (Block block in blocks)
             {
-                block.Draw(gameTime, spriteBatch);
+                spriteBatch.Draw(_tileset, block.Position, block.Tile, Color.White, 0, new Vector2(BlockWidth / 2, BlockHeight / 2), 1f, SpriteEffects.None, 0);
             }
+            //spriteBatch.Draw(cube, Bounds.GetPosition(), new Rectangle(0, 0, (int)Bounds.GetWidth(), (int)Bounds.GetHeight()), Color.White, 0, new Vector2(Bounds.GetWidth() / 2, Bounds.GetHeight() / 2), 1f, SpriteEffects.None, 0);
         }
+    }
+
+    public enum BlockType
+    {
+        Default,
+        Ice
     }
 }

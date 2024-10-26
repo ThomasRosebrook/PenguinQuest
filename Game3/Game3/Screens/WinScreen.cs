@@ -20,13 +20,10 @@ namespace Game3.Screens
 
         Texture2D Penguini;
 
-        Goal goal;
-
-        public WinScreen(Goal goal)
+        public WinScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
-            this.goal = goal;
         }
 
         public override void Activate()
@@ -63,10 +60,14 @@ namespace Game3.Screens
         {
             base.HandleInput(gameTime, input);
 
-            if (input.Exit) ScreenManager.Game.Exit();
+            if (input.Exit)
+            {
+                ScreenManager.AddScreen(new MainMenu(), null);
+                this.ExitScreen();
+            }
             if (input.JumpStart)
             {
-                ScreenManager.AddScreen(new LevelOne(goal), null);
+                ScreenManager.AddScreen(ScreenManager.GetCurrentLevel(), null);
                 this.ExitScreen();
             }
 
